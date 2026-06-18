@@ -1,11 +1,15 @@
 from flask import Flask
+from pydantic import ValidationError
 
 from config.constants import SECRET_KEY, SQLALCHEMY_DATABASE_URI
 from config.database import db
+from utils import handle_validation_errors
 
 
 def create_app(config_name: str = "default") -> Flask:
     app = Flask(__name__)
+
+    app.register_error_handler(ValidationError, handle_validation_errors)
 
     app.config["SECRET_KEY"] = SECRET_KEY
 
