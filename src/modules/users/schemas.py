@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class CreateUserBody(BaseModel):
     username: str = Field(max_length=24)
     password: str = Field(max_length=24)
+    email: EmailStr

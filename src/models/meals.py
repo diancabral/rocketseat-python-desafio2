@@ -15,13 +15,14 @@ class Meals(db.Model):
     name: Mapped[str] = mapped_column(String(24), nullable=False)
     description: Mapped[str] = mapped_column(String(100), nullable=False)
     is_diet: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    datetime: Mapped[datetime] = mapped_column(
+    user_id: Mapped[UUID] = mapped_column(String(36), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
     )
-
-    def __init__(self, name: str, description: str, is_diet: bool):
-        self.name = name
-        self.description = description
-        self.is_diet = is_diet
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+    )

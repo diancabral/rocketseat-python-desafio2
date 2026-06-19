@@ -1,0 +1,1 @@
+from .login_manager import register_login_manager

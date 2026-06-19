@@ -1,13 +1,21 @@
 from flask import Flask
+from flask_login import LoginManager
 from pydantic import ValidationError
 
+import models
 from config.constants import SECRET_KEY, SQLALCHEMY_DATABASE_URI
 from config.database import db
+from modules.auth import register_login_manager
 from utils import handle_validation_errors
+
+from .routes import register_routes
 
 
 def create_app(config_name: str = "default") -> Flask:
     app = Flask(__name__)
+    app.url_map.strict_slashes = False
+
+    login_manager = LoginManager()
 
     app.register_error_handler(ValidationError, handle_validation_errors)
 
@@ -19,10 +27,9 @@ def create_app(config_name: str = "default") -> Flask:
         app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 
     db.init_app(app)
+    login_manager.init_app(app)
 
-    import models
-    from routes import register_routes
-
+    register_login_manager(login_manager)
     register_routes(app)
 
     return app

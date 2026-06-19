@@ -1,6 +1,9 @@
-.PHONY: help install run flask-shell db-up db-down db-logs clean
+.PHONY: help install run flask-shell db-up db-down db-logs alembic-revision alembic-upgrade clean
 
 .DEFAULT_GOAL := help
+
+# Mensagem da revisão Alembic (ex.: make alembic-revision MSG="add users index")
+MSG ?= initial
 
 VENV := .venv
 PY := $(VENV)/bin/python
@@ -9,11 +12,13 @@ ACTIVATE := $(VENV)/bin/activate
 help:
 	@echo "Available commands:"
 	@echo "  make install      - install dependencies (uv sync into $(VENV))"
-	@echo "  make run          - activate $(VENV) and run the API (creates $(VENV) and installs deps if needed)"
-	@echo "  make flask-shell  - activate $(VENV) and run Flask shell (same bootstrap as run)"
+	@echo "  make run              - activate $(VENV) and run the API (creates $(VENV) and installs deps if needed)"
+	@echo "  make flask-shell      - activate $(VENV) and run Flask shell (same bootstrap as run)"
 	@echo "  make db-up        - start MySQL"
 	@echo "  make db-down      - stop MySQL"
 	@echo "  make db-logs      - follow MySQL logs"
+	@echo "  make alembic-revision - autogenerate migration (default MSG=initial; override: MSG=\"...\")"
+	@echo "  make alembic-upgrade  - apply migrations (alembic upgrade head)"
 	@echo "  make clean        - remove __pycache__ directories and .pyc files"
 
 install:
@@ -45,6 +50,12 @@ db-down:
 
 db-logs:
 	docker-compose logs -f db
+
+alembic-revision:
+	PYTHONPATH=src uv run alembic revision --autogenerate -m "$(MSG)"
+
+alembic-upgrade:
+	PYTHONPATH=src uv run alembic upgrade head
 
 clean:
 	find . -type d -name __pycache__ -prune -exec rm -rf {} + 2>/dev/null || true
