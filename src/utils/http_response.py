@@ -14,4 +14,4 @@ def http_response(
     body = {**kwargs} if message == "" else {**kwargs, key: message}
     code_key = {"code": code} if code != "" else {}
 
-    return jsonify({**body, **code_key}), int(status)
+    return jsonify(**body, **code_key), int(status)

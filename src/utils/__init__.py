@@ -1,2 +1,3 @@
+from .handle_http_errors import handle_forbidden, handle_unauthorized
 from .handle_validation_errors import handle_validation_errors
 from .http_response import http_response
